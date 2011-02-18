@@ -15,12 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // podłączenie renderera do wigetu:
     ui->qvtkWidget->GetRenderWindow()->AddRenderer(ren);
     renWin = ui->qvtkWidget->GetRenderWindow();
-    renWin->StereoCapableWindowOn();
-
-    // podmiana interaktora
-    iren = ui->qvtkWidget->GetInteractor();
-    vtkInteractorStyleUnicam *unicamStyl = vtkInteractorStyleUnicam::New();
-    iren->SetInteractorStyle(unicamStyl);
 
     // przykładowy strumień VTK
     newMesh();
@@ -34,35 +28,29 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setStatusText(QString)),
             ui->statusBar, SLOT(showMessage(QString)) );
 
-//    connect(ui->qvtkWidget, SIGNAL(mouseEvent(QMouseEvent*)),   //sygnał z widgetu, nie z VTK!
-//            this, SLOT(updateCoords()));
-
-
     // Zestawienie połączeń VTK->Gt:
     vtkSmartPointer<vtkEventQtSlotConnect> connections =
             vtkSmartPointer<vtkEventQtSlotConnect>::New();
 
     // przechwycenie zdarzeń vtk:
     connections->Connect(ui->qvtkWidget->GetInteractor(),
-                            vtkCommand::LeftButtonPressEvent,
+                            vtkCommand::EndEvent,
                             this,
-                            SLOT(updateCoords()));
-    //przykład podpięcia się pod postępy w obliczeniach, np. pod wczytywanie pliku:
-//    connections->Connect( XXXReader, vtkCommand::ProgressEvent,
-//                          this, SLOT( updateProgressValue( vtkObject*, unsigned long, void*, void*)));
+                            SLOT(updateCoords()));  // reakcja na kliknięcie klawisza
 
-    // debug poprawności połączeń na konsolę:
+    // debug poprawności VTK->Qt połączeń na konsolę:
     connections->PrintSelf(cout, vtkIndent());
 
 }
 
+// slot obsługuje StatusBar - wyświetlanie wartości INT
 void MainWindow::showOnStatusBar(int i)
 {
     // wystawienie wartości INT na StatusBar
     ui->statusBar->showMessage(QString::fromUtf8("Wartość: %1").arg(i));
 }
 
-//
+// przykład pobrania wsp. kamery
 void MainWindow::updateCoords()
 {
     double camPosition[3];
@@ -76,6 +64,7 @@ void MainWindow::updateCoords()
     ui->statusBar->showMessage(str);
 }
 
+// obsługa wyświetlania postępu obliczeń obiektu VTK
 void MainWindow::updateProgressValue( vtkObject *caller,
                                       unsigned long vtkEvent,
                                       void* client_data,
@@ -84,7 +73,7 @@ void MainWindow::updateProgressValue( vtkObject *caller,
 
         if( vtkEvent == vtkCommand::ProgressEvent )     // weryfikacja zdarzenia
         {
-                double v = *((double*) call_data);
+                double v = *((double*) call_data);  // rzutowanie danych
                 int value = 100*v;
                 emit newProgress( value );  // powiadomienie o postępach w %
         }
@@ -101,6 +90,7 @@ void MainWindow::setResolution(int res)
     }
 }
 
+// zbudowanie strumienia wizualziacji - miejsce na kod VTK
 void MainWindow::newMesh()
 {
     // Geometry
@@ -123,7 +113,6 @@ void MainWindow::newMesh()
 
     // Reset camera
     ren->ResetCamera();
-
     ren->GetRenderWindow()->Render();
 
     // Cleaning
@@ -132,15 +121,14 @@ void MainWindow::newMesh()
     source->Delete();
 }
 
-
-
+// destruktor okna
 MainWindow::~MainWindow()
 {
     ren->Delete();
-
     delete ui;
 }
 
+// metoda wygenerowana automatycznie przez kreator
 void MainWindow::changeEvent(QEvent *e)
 {
     QMainWindow::changeEvent(e);

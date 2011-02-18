@@ -2,3 +2,4 @@ src/*.o
 src/ui_*.h
 src/moc_*
 src/QtVtk
+src/Makefile

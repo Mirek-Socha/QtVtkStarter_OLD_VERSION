@@ -18,9 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
     renWin->StereoCapableWindowOn();
 
     // podmiana interaktora
-    iren = ui->qvtkWidget->GetInteractor();
-    vtkInteractorStyleUnicam *unicamStyl = vtkInteractorStyleUnicam::New();
-    iren->SetInteractorStyle(unicamStyl);
+//    iren = ui->qvtkWidget->GetInteractor();
+//    vtkInteractorStyleUnicam *unicamStyl = vtkInteractorStyleUnicam::New();
+//    iren->SetInteractorStyle(unicamStyl);
 
     // przykładowy strumień VTK
     newMesh();
@@ -62,7 +62,7 @@ void MainWindow::showOnStatusBar(int i)
     ui->statusBar->showMessage(QString::fromUtf8("Wartość: %1").arg(i));
 }
 
-//
+// wyświetlenie wsp. kamery
 void MainWindow::updateCoords()
 {
     double camPosition[3];
@@ -76,6 +76,7 @@ void MainWindow::updateCoords()
     ui->statusBar->showMessage(str);
 }
 
+// komunikacja VTK -> QT
 void MainWindow::updateProgressValue( vtkObject *caller,
                                       unsigned long vtkEvent,
                                       void* client_data,
@@ -94,13 +95,11 @@ void MainWindow::updateProgressValue( vtkObject *caller,
 // zmiana parametrów obiektu VTK
 void MainWindow::setResolution(int res)
 {
-    if (source!=NULL)
-    {
-        source->SetResolution(res);
-        ui->qvtkWidget->repaint();
-    }
+    source->SetResolution(res);     // zmiana parametru źródła
+    ui->qvtkWidget->repaint();      // wymuszenie narysowania widgetu
 }
 
+// przygotwanie strumienia VTK
 void MainWindow::newMesh()
 {
     // Geometry
@@ -132,8 +131,6 @@ void MainWindow::newMesh()
     source->Delete();
 }
 
-
-
 MainWindow::~MainWindow()
 {
     ren->Delete();
@@ -141,14 +138,3 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::changeEvent(QEvent *e)
-{
-    QMainWindow::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
-    }
-}

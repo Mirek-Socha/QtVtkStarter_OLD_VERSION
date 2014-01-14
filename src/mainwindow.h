@@ -30,7 +30,6 @@ public:
     ~MainWindow();
 
 protected:
-    void changeEvent(QEvent *e);
     void newMesh();             // inicjalizacja strumienia VTK
 
 signals:

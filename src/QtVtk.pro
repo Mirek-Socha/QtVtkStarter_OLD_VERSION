@@ -17,6 +17,6 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 
-LIBS    += -L/usr/lib/vtk-5.2 -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkHybrid
+LIBS    += -L/usr/lib/vtk-5.8 -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkHybrid
 
-INCLUDEPATH += /usr/include/vtk-5.2
+INCLUDEPATH += /usr/include/vtk-5.8

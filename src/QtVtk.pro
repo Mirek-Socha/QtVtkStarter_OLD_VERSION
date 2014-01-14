@@ -19,4 +19,4 @@ FORMS    += mainwindow.ui
 
 LIBS    += -L/usr/lib -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkHybrid
 
-INCLUDEPATH += /usr/include/vtk-5.2
+INCLUDEPATH += /usr/include/vtk-5.8
